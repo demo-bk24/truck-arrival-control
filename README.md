@@ -15,7 +15,7 @@ A project for managing truck arrival control, based on web application. Built wi
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/demo-bk23/truck-arrival-control.git
+git clone https://github.com/demo-bk24/truck-arrival-control.git
 ```
 
 2. Navigate to the project directory:
