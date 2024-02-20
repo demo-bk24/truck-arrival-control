@@ -2,6 +2,9 @@
 
 A project for managing truck arrival control, based on web application. Built with [Angular](https://angular.io/), [Express.js](https://expressjs.com/) and [MongoDB](https://www.mongodb.com/)
 
+- Admin demo app: https://demo-admin-bk24.netlify.app/
+- Client demo app: https://demo-client-bk24.netlify.app/
+
 ## Prerequisites
 
 - Node.js and npm installed
