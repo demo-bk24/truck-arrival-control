@@ -1,0 +1,35 @@
+@import "assets/themes";
+@import "@nebular/theme/styles/globals";
+
+@import "bootstrap/scss/bootstrap-utilities";
+@import "bootstrap/scss/bootstrap-grid";
+@import "bootstrap/scss/bootstrap-reboot";
+@import "bootstrap/scss/tables";
+
+// loading progress bar theme
+@import "assets/pace.theme";
+
+@import "assets/partials/layout";
+@import "assets/partials/overrides";
+
+@include nb-install() {
+  @include nb-theme-global();
+
+  // @include ngx-layout();
+  // // loading progress bar
+  // @include ngx-pace-theme();
+
+  // @include nb-overrides();
+}
+
+table {
+  color: var(--text-basic-color) !important;
+}
+
+.name {
+  cursor: pointer;
+
+  &:hover {
+    border-bottom: 1px solid var(--text-basic-color);
+  }
+}

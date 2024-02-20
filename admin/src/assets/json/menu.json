@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Mantenimiento",
+    "icon": "settings-2-outline",
+    "children": [
+      {
+        "title": "Sedes",
+        "link": "/pages/mantenimiento/sedes"
+      },
+      {
+        "title": "Usuarios",
+        "link": "/pages/mantenimiento/usuarios"
+      }
+    ]
+  },
+  {
+    "title": "Control",
+    "icon": "car-outline",
+    "children": [
+      {
+        "title": "Registros",
+        "link": "/pages/control/registros"
+      },
+      {
+        "title": "Bahias",
+        "link": "/pages/control/bahias"
+      },
+      {
+        "title": "Montacargas",
+        "link": "/pages/control/montacargas"
+      },
+      {
+        "title": "Camiones",
+        "link": "/pages/control/camiones"
+      },
+      {
+        "title": "Tipos de camión",
+        "link": "/pages/control/tipos-camiones"
+      }
+    ]
+  }
+]

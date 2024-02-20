@@ -1,0 +1,287 @@
+<nb-card class="border-0 shadow-sm">
+  <nb-card-header>
+    <div class="row align-items-center g-0">
+      <div class="col-lg-2 align-self-center">
+        <app-header-info
+          title="REGISTROS"
+          description="Administrar registros"
+          status="primary"
+          icon="shopping-bag-outline"
+        >
+        </app-header-info>
+      </div>
+      <div class="col-lg-10 text-end">
+        <div class="row justify-content-md-center float-end g-2">
+          <div class="col-auto">
+            <form [formGroup]="dateForm">
+              <nb-form-field>
+                <input
+                  nbInput
+                  placeholder="Escoga una fecha"
+                  fullWidth
+                  [nbDatepicker]="date"
+                  formControlName="fecha"
+                  shape="semi-round"
+                />
+                <nb-icon
+                  nbSuffix
+                  icon="calendar"
+                  status="primary"
+                  size="small"
+                  pack="eva"
+                ></nb-icon>
+                <nb-datepicker #date format="dd/MM/yyyy"> </nb-datepicker>
+              </nb-form-field>
+              <app-error-message controlName="fecha"></app-error-message>
+            </form>
+          </div>
+          <div class="col-auto" [formGroup]="forma">
+            <nb-select formControlName="field" shape="semi-round">
+              <nb-option value="document">Cédula</nb-option>
+              <nb-option value="plaque">Placa</nb-option>
+            </nb-select>
+          </div>
+          <div class="col-auto" [formGroup]="forma">
+            <input
+              formControlName="query"
+              type="search"
+              nbInput
+              shape="semi-round"
+              fullWidth
+              placeholder="Ingrese datos"
+            />
+          </div>
+          <div class="col-auto">
+            <button
+              (click)="filter()"
+              nbButton
+              fullWidth
+              shape="semi-round"
+              status="primary"
+            >
+              <nb-icon icon="eye-outline"></nb-icon>
+              VISUALIZAR
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div style="overflow-x: auto">
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Hola llegada</th>
+              <th>Vehículo</th>
+              <th>Tipo</th>
+              <th>Conductor</th>
+              <th>Bahia descarga</th>
+              <th>Bahia carga</th>
+              <th style="width: 150px">Estado</th>
+              <th>Fecha</th>
+              <th style="width: 60px">Nota</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let d of registries
+                  | paginate
+                    : {
+                        id: 'registries',
+                        itemsPerPage: perPage.value,
+                        currentPage: page,
+                        totalItems: totalRegistries
+                      };
+                let i = index
+              "
+            >
+              <th>{{ (params.page - 1) * params.pageSize + i + 1 }}</th>
+              <td>{{ d.arrival | date : "HH:mm a" }}</td>
+              <td>{{ d.truck.plaque }}</td>
+              <td>{{ d.truck.type }}</td>
+              <td>
+                {{ d.driver.firstName }} {{ d.driver.lastName }} <br />
+                <small class="text-muted"
+                  >Cédula: {{ d.driver.document }}</small
+                >
+              </td>
+              <td>
+                {{ d.unloadBay?.name }} <br />
+                <small>{{ d.unloadLift?.name }}</small>
+              </td>
+              <td>
+                {{ d.loadBay?.name }} <br />
+                <small>{{ d.loadLift?.name }}</small>
+              </td>
+              <td>{{ d.state }}</td>
+              <td>{{ d.createdAt | date }}</td>
+              <td>
+                <button
+                  *ngIf="d.observation"
+                  nbButton
+                  shape="semi-round"
+                  [nbPopover]="d.observation"
+                  nbPopoverTrigger="focus"
+                  ghost
+                >
+                  <nb-icon icon="message-square-outline"></nb-icon>
+                </button>
+              </td>
+              <td>
+                <div class="d-flex gap-2">
+                  <button
+                    (click)="openRegForm(dialog, d)"
+                    nbTooltip="Editar"
+                    nbTooltipStatus="info"
+                    nbButton
+                    status="info"
+                    size="small"
+                    outline
+                  >
+                    <nb-icon icon="edit-outline"></nb-icon>
+                  </button>
+                  <button
+                    (click)="confirmDestroy(d)"
+                    nbTooltip="Eliminar"
+                    nbTooltipStatus="danger"
+                    nbButton
+                    status="danger"
+                    size="small"
+                    outline
+                  >
+                    <nb-icon icon="trash-2-outline"></nb-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="text-center">
+      <pagination-controls
+        [directionLinks]="true"
+        previousLabel=""
+        nextLabel=""
+        id="registries"
+        (pageChange)="list($event)"
+      ></pagination-controls>
+    </div>
+    <small class="text-start">{{ totalRegistries }} Registros</small>
+  </nb-card-footer>
+</nb-card>
+
+<ng-template #dialog let-ref="dialogRef">
+  <nb-card appWindow widthSize="sm">
+    <nb-card-header>
+      <div class="d-flex align-items-center justify-content-between">
+        <app-header-info
+          title="Actualizar detalles de registro"
+          status="primary"
+          icon="car-outline"
+        >
+        </app-header-info>
+        <button
+          nbButton
+          ghost
+          status="basic"
+          (click)="ref.close()"
+          shape="semi-round"
+        >
+          <nb-icon icon="close-outline"></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row g-3" [formGroup]="regForm">
+        <div class="col-md-12">
+          <h6>Vehículo: {{ registry.truck.plaque }}</h6>
+          <p class="text-right">
+            Conductor: {{ registry.driver.firstName }}
+            {{ registry.driver.lastName }}
+          </p>
+        </div>
+        <div class="col-md-12">
+          <label class="label">Estado</label>
+          <nb-select
+            formControlName="state"
+            placeholder="Seleccione sede"
+            shape="semi-round"
+            fullWidth
+          >
+            <nb-option [value]="item" *ngFor="let item of status">{{
+              item
+            }}</nb-option>
+          </nb-select>
+        </div>
+        <div class="col-md-12">
+          <label class="label">Bahia descarga</label>
+          <nb-select
+            formControlName="unloadBay"
+            placeholder="Seleccione bahia"
+            shape="semi-round"
+            fullWidth
+          >
+            <nb-option [value]="item._id" *ngFor="let item of bahias">{{
+              item.name
+            }}</nb-option>
+          </nb-select>
+        </div>
+        <div class="col-md-12">
+          <label class="label">Bahia carga</label>
+          <nb-select
+            formControlName="loadBay"
+            placeholder="Seleccione bahia"
+            shape="semi-round"
+            fullWidth
+          >
+            <nb-option [value]="item._id" *ngFor="let item of bahias">{{
+              item.name
+            }}</nb-option>
+          </nb-select>
+        </div>
+        <div class="col-md-12">
+          <label class="label">Observación</label>
+          <textarea
+            nbInput
+            formControlName="observation"
+            rows="6"
+            fullWidth
+            placeholder="Ingrese observación o nota"
+          >
+          </textarea>
+          <app-error-message controlName="observation"></app-error-message>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end flex-wrap gap-2">
+        <button
+          nbButton
+          status="primary"
+          shape="semi-round"
+          (click)="save()"
+          [disabled]="!regForm.valid"
+        >
+          <nb-icon icon="save"></nb-icon>
+          Guardar
+        </button>
+        <button
+          nbButton
+          status="danger"
+          shape="semi-round"
+          (click)="ref.close()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

@@ -1,0 +1,44 @@
+<nb-layout>
+  <nb-layout-column
+    class="d-flex align-items-center justify-content-center p-0"
+    [ngStyle]="loadBackgroundImage()"
+  >
+    <nb-card class="py-4 px-2" style="border-radius: 10px">
+      <nb-card-body style="max-width: 98%; width: 400px">
+        <h2 class="text-center">WMS ADMIN</h2>
+        <h5 class="my-4">Iniciar Sesión</h5>
+        <hr />
+        <form [formGroup]="form" class="d-flex flex-column gap-4">
+          <input
+            type="text"
+            formControlName="username"
+            nbInput
+            fullWidth
+            status="primary"
+            placeholder="Ingrese Usuario"
+            shape="semi-round"
+          />
+          <input
+            type="password"
+            formControlName="password"
+            nbInput
+            fullWidth
+            status="primary"
+            placeholder="Ingrese Contraseña"
+            shape="semi-round"
+          />
+          <button
+            (click)="login()"
+            nbButton
+            status="primary"
+            fullWidth
+            shape="semi-round"
+            [disabled]="form.invalid"
+          >
+            <nb-icon icon="unlock-outline"></nb-icon>Ingresar
+          </button>
+        </form>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

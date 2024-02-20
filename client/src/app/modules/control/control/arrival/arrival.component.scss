@@ -1,0 +1,28 @@
+.flicker {
+  font-size: 1.2em;
+  animation: flicker 3s infinite alternate;
+}
+
+/* Flickering animation */
+
+@keyframes flicker {
+  0%,
+    18%,
+    22%,
+    25%, // 53%,
+    // 57%,
+    80% {
+    color: #fff;
+    background-color: red;
+    text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff,
+      0 0 40px rgb(255, 0, 212), 0 0 80px rgb(255, 0, 212),
+      0 0 90px rgb(255, 0, 212), 0 0 100px #0fa, 0 0 150px #0fa;
+  }
+  20%,
+  24%,
+  55% {
+    color: #f00;
+    background-color: white;
+    text-shadow: none;
+  }
+}

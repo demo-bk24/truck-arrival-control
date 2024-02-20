@@ -1,0 +1,134 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/control/control">
+        <fa-icon [icon]="['fas', 'home']"></fa-icon>
+        Inicio
+      </a>
+    </li>
+    <li
+      class="breadcrumb-item active"
+      aria-current="page"
+      (click)="loadRegistries()"
+    >
+      Registrar salidas
+      <fa-icon [icon]="['fas', 'sync-alt']"></fa-icon>
+    </li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-md-4 offset-md-8">
+    <div class="form-group">
+      <label for="celula">Filtrar</label>
+      <input
+        type="search"
+        name="celula"
+        id="celula"
+        [(ngModel)]="byCedule"
+        class="form-control"
+        placeholder="Ingrese cédula"
+      />
+    </div>
+  </div>
+</div>
+
+<!-- <div class="text-end mb-4">
+    <button class="btn btn-primary btn-lg btn-mob" (click)="openModal(template)">
+        <fa-icon [icon]="['fas', 'edit' ]"></fa-icon>
+        Registrar salida
+    </button>
+</div> -->
+
+<div class="d-flex justify-content-between">
+  <p>
+    <span class="text-danger">{{ collection.length }}</span> Vehículos atendidos
+  </p>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col"><small>Hora llegada</small></th>
+        <th scope="col" style="min-width: 7em">Conductor</th>
+        <th scope="col">Vehículo</th>
+        <th scope="col"><small>Descarga</small></th>
+        <th scope="col"><small>Carga</small></th>
+        <th scope="col"><small>Hora salida</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of filterCol(); index as i">
+        <td scope="row">{{ i + 1 }}</td>
+        <td>{{ d.arrival | date : "HH:mm" }}</td>
+        <td>
+          <strong>{{ d.driver.document }}</strong> | {{ d.driver.firstName }}
+          {{ d.driver.lastName }}
+        </td>
+        <td>
+          {{ d.truck.plaque }} <br />
+          <small>{{ d.truck.type.name }}</small>
+        </td>
+        <td>
+          <ng-container *ngIf="d.unloadBay">
+            <p class="m-0">{{ d.unloadBay.name }}</p>
+          </ng-container>
+          <small class="{{ d.state === 'DESCARGANDO' ? 'text-info' : '' }}"
+            >{{ d.state }} {{ d.state === "DESCARGANDO" ? "..." : "" }}</small
+          >
+        </td>
+        <td>
+          <ng-container *ngIf="d.loadBay">
+            <p class="m-0">{{ d.loadBay.name }}</p>
+            <small class="{{ d.state === 'CARGANDO' ? 'text-info' : '' }}"
+              >{{ d.state }} {{ d.state === "CARGANDO" ? "..." : "" }}</small
+            >
+          </ng-container>
+        </td>
+        <td>
+          <ng-container *ngIf="d.exit">
+            {{ d.exit | date : "HH:mm" }}
+          </ng-container>
+          <ng-container *ngIf="!d.exit">
+            <button
+              class="btn btn-primary"
+              (click)="openConfirmModal(confirm, d)"
+            >
+              Salida
+            </button>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #confirm>
+  <div class="modal-header">
+    <h5 class="modal-title">Confirmar salida</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>
+      ¿Confirma la salida del vehículo
+      <strong>{{ registry.truck.plaque }}</strong
+      >?
+    </p>
+    <button
+      type="button"
+      class="btn btn-primary w-100 mb-2"
+      (click)="saveExit()"
+    >
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef?.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>

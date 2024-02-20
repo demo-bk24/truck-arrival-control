@@ -1,0 +1,131 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">
+      <fa-icon [icon]="['fas', 'home']"></fa-icon>
+      Inicio
+    </li>
+    <li class="breadcrumb-item active">Control del registro</li>
+  </ol>
+</nav>
+
+<div *ngIf="registry">
+  <div class="row">
+    <div class="col">
+      <h4>{{ registry.truck.plaque }}</h4>
+    </div>
+    <div class="col">
+      <p class="text-end">{{ today | date }}</p>
+    </div>
+  </div>
+  <button
+    class="btn btn-outline-dark btn-sm btn-rounded float-end"
+    (click)="getForNow()"
+  >
+    <fa-icon [icon]="['fas', 'sync-alt']"></fa-icon>
+  </button>
+  <hr />
+
+  <div class="row">
+    <div class="col-10">
+      <h5>1.- Registro de llegada:</h5>
+      <p class="ps-4">{{ registry.arrival | date : "HH:mm a" }}</p>
+    </div>
+    <div class="col-2">
+      <strong class="text-green" *ngIf="registry.arrival">
+        <fa-icon [icon]="['fas', 'check-double']" size="2x"></fa-icon>
+      </strong>
+    </div>
+
+    <div class="col-10">
+      <h5>2.- Hora de ingreso:</h5>
+      <p class="ps-4">{{ registry.checkInTime | date : "HH:mm a" }}</p>
+    </div>
+    <div class="col-2">
+      <strong class="text-green" *ngIf="registry.checkInTime">
+        <fa-icon [icon]="['fas', 'check-double']" size="2x"></fa-icon>
+      </strong>
+    </div>
+
+    <div
+      class="col-10"
+      [class.flicker]="registry.unloadBay && !registry.unloadStartTime"
+    >
+      <h5>3.- Inicio de descarga:</h5>
+      <div class="d-flex justify-content-between ps-4 mb-3">
+        <div>{{ registry.unloadStartTime | date : "HH:mm a" }}</div>
+        <div *ngIf="registry.unloadBay">
+          <span *ngIf="!registry.unloadStartTime">{{
+            registry.unloadBay.name
+          }}</span>
+          <span class="badge bg-dark" *ngIf="registry.unloadStartTime">{{
+            registry.unloadBay.name
+          }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+      <strong class="text-green" *ngIf="registry.unloadStartTime">
+        <fa-icon [icon]="['fas', 'check-double']" size="2x"></fa-icon>
+      </strong>
+    </div>
+
+    <div class="col-10">
+      <h5>4.- Fin de descarga:</h5>
+      <div *ngIf="registry.state === 'DESCARGANDO'" class="text-success ms-3">
+        DESCARGANDO...
+      </div>
+      <p class="ps-4">{{ registry.unloadEndTime | date : "HH:mm a" }}</p>
+    </div>
+    <div class="col-2">
+      <strong class="text-green" *ngIf="registry.unloadEndTime">
+        <fa-icon [icon]="['fas', 'check-double']" size="2x"></fa-icon>
+      </strong>
+    </div>
+
+    <div
+      class="col-10"
+      [class.flicker]="registry.loadBay && !registry.loadStartTime"
+    >
+      <h5>5.- Inicio de carga:</h5>
+      <div class="d-flex justify-content-between ps-4 mb-3">
+        <div>{{ registry.loadStartTime | date : "HH:mm a" }}</div>
+        <div *ngIf="registry.loadBay">
+          <span *ngIf="!registry.loadStartTime">{{
+            registry.loadBay.name
+          }}</span>
+          <span class="badge bg-dark" *ngIf="registry.loadStartTime">{{
+            registry.loadBay.name
+          }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+      <strong class="text-green" *ngIf="registry.loadStartTime">
+        <fa-icon [icon]="['fas', 'check-double']" size="2x"></fa-icon>
+      </strong>
+    </div>
+
+    <div class="col-10">
+      <h5>6.- Fin de carga:</h5>
+      <div *ngIf="registry.state === 'CARGANDO'" class="text-success ms-3">
+        CARGANDO...
+      </div>
+      <p class="ps-4">{{ registry.loadEndTime | date : "HH:mm a" }}</p>
+    </div>
+    <div class="col-2">
+      <strong class="text-green" *ngIf="registry.loadEndTime">
+        <fa-icon [icon]="['fas', 'check-double']" size="2x"></fa-icon>
+      </strong>
+    </div>
+
+    <div class="col-10">
+      <h5>7.- Salida:</h5>
+      <p class="ps-4">{{ registry.exit | date : "HH:mm a" }}</p>
+    </div>
+    <div class="col-2">
+      <strong class="text-green" *ngIf="registry.exit">
+        <fa-icon [icon]="['fas', 'check-double']" size="2x"></fa-icon>
+      </strong>
+    </div>
+  </div>
+</div>

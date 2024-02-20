@@ -1,0 +1,39 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">
+      <fa-icon [icon]="['fas', 'home']"></fa-icon>
+      Inicio
+    </li>
+  </ol>
+</nav>
+
+<h3>
+  Control| <small class="text-muted">Llegada y salida de vehiculos</small>
+</h3>
+<hr />
+<p class="text-end">{{ date | date }}</p>
+
+<div class="row justify-content-around">
+  <div class="col-md-4 mb-3">
+    <div class="card shadow">
+      <div class="card-body">
+        <h3 class="card-title">Registro de llegadas</h3>
+        <hr />
+        <a class="btn btn-primary w-100" [routerLink]="['arrival']"
+          >Ir a registrar</a
+        >
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card shadow">
+      <div class="card-body">
+        <h3 class="card-title">Registro de salidas</h3>
+        <hr />
+        <a class="btn btn-primary w-100" [routerLink]="['exits']"
+          >Ir a registrar</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

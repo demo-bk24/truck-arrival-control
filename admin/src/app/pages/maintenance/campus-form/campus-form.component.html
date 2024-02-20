@@ -1,0 +1,108 @@
+<nb-card appWindow widthSize="sm" class="scrollModal">
+  <nb-card-header>
+    <div class="d-flex align-items-center justify-content-between">
+      <app-header-info
+        title="{{ title }}"
+        status="primary"
+        icon="people-outline"
+      >
+      </app-header-info>
+      <button nbButton ghost status="basic" (click)="closeModal()">
+        <nb-icon icon="close-outline"></nb-icon>
+      </button>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form" class="row g-3">
+      <div class="col-md-12">
+        <label class="label">BK<small> *</small></label>
+        <input
+          type="text"
+          formControlName="code"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese BK"
+        />
+        <app-error-message controlName="code"></app-error-message>
+      </div>
+      <div class="col-md-12">
+        <label class="label">CD<small> *</small></label>
+        <input
+          type="text"
+          formControlName="name"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese nombre CD"
+        />
+        <app-error-message controlName="name"></app-error-message>
+      </div>
+      <div class="col-md-6">
+        <label class="label">Meta sorting (cjs/hora)<small> *</small></label>
+        <input
+          type="number"
+          formControlName="goalSorting"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese meta sorting"
+        />
+        <app-error-message controlName="goalSorting"></app-error-message>
+      </div>
+      <div class="col-md-6">
+        <label class="label">Meta picking (cjs/hora)<small> *</small></label>
+        <input
+          type="number"
+          formControlName="goalPicking"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese meta picking"
+        />
+        <app-error-message controlName="goalPicking"></app-error-message>
+      </div>
+      <div class="col-md-6">
+        <label class="label">Meta control (minutos)<small> *</small></label>
+        <input
+          type="number"
+          formControlName="goalControl"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese meta control"
+        />
+        <app-error-message controlName="goalControl"></app-error-message>
+      </div>
+      <div class="col-md-12">
+        <label class="label">Región<small> *</small></label>
+        <input
+          type="text"
+          formControlName="region"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese región"
+        />
+        <app-error-message controlName="region"></app-error-message>
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer class="text-end">
+    <button nbButton shape="semi-round" status="danger" (click)="closeModal()">
+      <nb-icon icon="arrow-back-outline"></nb-icon>
+      Cancelar
+    </button>
+    <button
+      (click)="submit()"
+      nbButton
+      [disabled]="form.invalid"
+      shape="semi-round"
+      status="primary"
+      class="ms-2"
+    >
+      <nb-icon icon="save-outline"></nb-icon>
+      Guardar
+    </button>
+  </nb-card-footer>
+</nb-card>

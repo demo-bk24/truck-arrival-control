@@ -1,0 +1,206 @@
+<nb-card class="border-0 shadow-sm">
+  <nb-card-header>
+    <div class="row align-items-center g-0">
+      <div class="col-lg-3 align-self-center">
+        <app-header-info
+          title="TIPOS DE CAMIONES"
+          description="Administrar tipos de camiones"
+          status="primary"
+          icon="car-outline"
+        >
+        </app-header-info>
+      </div>
+      <div class="col-lg-9 text-end">
+        <div class="row justify-content-md-center float-end g-2">
+          <div class="col-auto">
+            <input
+              type="search"
+              nbInput
+              shape="semi-round"
+              fullWidth
+              placeholder="Ingrese datos"
+            />
+          </div>
+          <div class="col-auto">
+            <button
+              nbButton
+              fullWidth
+              shape="semi-round"
+              status="primary"
+              (click)="openModal(dialog)"
+            >
+              <nb-icon icon="plus-outline"></nb-icon>
+              Nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Max. Tiempo descarga</th>
+            <th>Max. Tiempo carga</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of truckTypes; let i = index">
+            <th>{{ i + 1 }}</th>
+            <td>{{ item.name }}</td>
+            <td>{{ item.description }}</td>
+            <th>{{ item.maxTimeUnload }} <small>Minutos</small></th>
+            <th>{{ item.maxTimeLoad }} <small>Minutos</small></th>
+            <td>
+              <div class="d-flex gap-2">
+                <button
+                  (click)="openModal(dialog, item)"
+                  nbTooltip="Editar"
+                  nbTooltipStatus="info"
+                  nbButton
+                  status="info"
+                  size="small"
+                  outline
+                >
+                  <nb-icon icon="edit-outline"></nb-icon>
+                </button>
+                <button
+                  (click)="confirmDelete(item)"
+                  nbTooltip="Eliminar"
+                  nbTooltipStatus="danger"
+                  nbButton
+                  status="danger"
+                  size="small"
+                  outline
+                >
+                  <nb-icon icon="trash-2-outline"></nb-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<ng-template #dialog let-ref="dialogRef">
+  <nb-card appWindow widthSize="sm">
+    <nb-card-header>
+      <div class="d-flex align-items-center justify-content-between">
+        <app-header-info [title]="title" status="primary" icon="car-outline">
+        </app-header-info>
+        <button
+          nbButton
+          ghost
+          status="basic"
+          (click)="ref.close()"
+          shape="semi-round"
+        >
+          <nb-icon icon="close-outline"></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row g-3" [formGroup]="formHeader">
+        <div class="col-md-12">
+          <label class="label">Nombre*</label>
+          <input
+            nbInput
+            type="text"
+            placeholder="Ingrese nombre"
+            formControlName="name"
+            shape="semi-round"
+            fullWidth
+          />
+          <app-error-message controlName="name"></app-error-message>
+        </div>
+        <div class="col-md-12">
+          <label class="label">Descripción</label>
+          <input
+            nbInput
+            type="text"
+            placeholder="Ingrese una descripción"
+            formControlName="description"
+            shape="semi-round"
+            fullWidth
+          />
+          <app-error-message controlName="description"></app-error-message>
+        </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="label">Tiempo máximo descarga</label>
+              <input
+                nbInput
+                type="number"
+                placeholder="Ingrese minutos"
+                formControlName="maxTimeUnload"
+                shape="semi-round"
+                fullWidth
+                min="0"
+              />
+              <app-error-message
+                controlName="maxTimeUnload"
+              ></app-error-message>
+            </div>
+            <div class="col-md-6">
+              <label class="label">Tiempo máximo carga</label>
+              <input
+                nbInput
+                type="number"
+                placeholder="Ingrese minutos"
+                formControlName="maxTimeLoad"
+                shape="semi-round"
+                fullWidth
+                min="0"
+              />
+              <app-error-message controlName="maxTimeLoad"></app-error-message>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <label class="label">CD <small> *</small></label>
+          <nb-select
+            formControlName="campus"
+            placeholder="Seleccione sede"
+            shape="semi-round"
+            fullWidth
+          >
+            <nb-option [value]="item.code" *ngFor="let item of campus"
+              >{{ item.code }} - {{ item.name }} - {{ item.region }}
+            </nb-option>
+          </nb-select>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end flex-wrap gap-2">
+        <button
+          nbButton
+          status="primary"
+          shape="semi-round"
+          (click)="insertTruckType()"
+          [disabled]="!formHeader.valid"
+        >
+          <nb-icon icon="save"></nb-icon>
+          Guardar
+        </button>
+        <button
+          nbButton
+          status="danger"
+          shape="semi-round"
+          (click)="ref.close()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

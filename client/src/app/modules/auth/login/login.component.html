@@ -1,0 +1,76 @@
+<div class="row d-flex justify-content-center align-items-center h-100">
+  <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+    <div class="card" style="border-radius: 1rem">
+      <div class="card-body p-md-5">
+        <div class="mb-md-5 mt-md-4 pb-3">
+          <div class="mb-3 text-center">
+            <img
+              src="../../../../assets/images/logo.png"
+              class="img-fluid mb-2"
+              width="85"
+            />
+            <h4 class="fw-bold mb-2">Sistema de colas</h4>
+            <h5 class="mb-3">Ingresar</h5>
+          </div>
+
+          <form [formGroup]="form" (submit)="login()">
+            <div class="mb-3">
+              <label class="form-label text-start">Usuario*</label>
+              <input
+                formControlName="username"
+                type="text"
+                class="form-control"
+                placeholder="Ingrese usuario o cédula"
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-start">Contraseña*</label>
+              <input
+                formControlName="password"
+                type="password"
+                class="form-control"
+                placeholder="Ingrese contraseña"
+                name="password"
+                autocomplete="off"
+              />
+            </div>
+            <div class="d-grid gap-2">
+              <button
+                class="btn btn-primary px-5"
+                type="submit"
+                [disabled]="form.invalid"
+                *ngIf="!loading"
+              >
+                <fa-icon [icon]="['fas', 'sign-in-alt']" size="lg"></fa-icon>
+                Ingresar
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary px-5"
+                disabled
+                *ngIf="loading"
+              >
+                <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+                Espere...
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <p>
+            ¿No tienes cuenta todavía?
+            <a routerLink="/auth/registration" class="fw-bold"> Registrarme </a>
+          </p>
+          <p class="text-center">
+            <small>
+              <a routerLink="/tv/home"> Show panel </a>
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

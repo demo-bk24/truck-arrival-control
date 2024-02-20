@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <h4>Registro inicializado</h4>
+</div>
+<div class="modal-body">
+  <small>Cedula de indetidad</small>
+  <h6>{{ driver.document }}</h6>
+  <small>Nombres y Apellidos</small>
+  <h6>{{ driver.firstName }} {{ driver.lastName }}</h6>
+  <small>Licencia - Categoría</small>
+  <h6>{{ driver.licence }} - {{ driver.category }}</h6>
+
+  <small>Vehiculo</small>
+  <h6>{{ truck.plaque }}</h6>
+  <small>Tipo vehículo</small>
+  <h6>{{ truck.type.name }}</h6>
+  <small>Procedencia</small>
+  <h6>{{ truck.origin }}</h6>
+  <small>Empresa</small>
+  <h6>{{ truck.company }}</h6>
+
+  <div class="py-3">
+    <button class="btn btn-primary w-100" (click)="registryUpdate()">
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Registrar llegada
+    </button>
+  </div>
+</div>

@@ -1,0 +1,251 @@
+<h3>Asistencia| <small class="text-muted">Control de bahías</small></h3>
+<hr />
+<p class="text-end">{{ date | date }}</p>
+
+<div class="row">
+  <div class="col-md-4" *ngFor="let d of bahias">
+    <div class="card mb-3 {{ d.isFree ? 'bg-success-1' : 'bg-warning' }}">
+      <div class="card-body">
+        <h5 class="card-title">{{ d.name }}</h5>
+        <hr class="m-0" />
+        <div *ngIf="!d.isFree">
+          <div class="row">
+            <div class="col">
+              <small>Vehículo</small>
+              <h4>{{ d.registry.truck.plaque }}</h4>
+            </div>
+            <div class="col">
+              <small>Montacarga</small>
+              <h5>{{ d.registry.lift.name }}</h5>
+            </div>
+          </div>
+          <div class="text-center" *ngIf="d.registry.state === 'DESCARGANDO'">
+            <app-timer
+              [start]="true"
+              [action]="'DESCARGANDO...'"
+              [startTime]="d.registry.unloadStartTime"
+              [maxMin]="d.registry.truck.type.maxTimeUnload"
+            ></app-timer>
+          </div>
+          <div class="text-center" *ngIf="d.registry.state === 'CARGANDO'">
+            <app-timer
+              [start]="true"
+              [action]="'CARGANDO...'"
+              [startTime]="d.registry.loadStartTime"
+              [maxMin]="d.registry.truck.type.maxTimeLoad"
+            ></app-timer>
+          </div>
+          <div
+            class="text-center"
+            *ngIf="
+              d.registry.state === 'DESCARGA' || d.registry.state === 'CARGA'
+            "
+          >
+            <p class="text-danger mb-1">ESPERANDO VEHICULO</p>
+            <app-timer></app-timer>
+            <h4 class="text-danger fw-bold">00:00:00</h4>
+          </div>
+        </div>
+        <div class="text-center text-success" *ngIf="d.isFree">
+          <small>Vehículo</small>
+          <h4>-------</h4>
+          <small>Estado</small>
+          <h2 class="text-muted"><small>LIBRE</small></h2>
+          <app-timer></app-timer>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-end">
+  <button (click)="loadBays()" class="btn btn-sm btn-outline-dark btn-rounded">
+    <fa-icon [icon]="['fas', 'sync-alt']"></fa-icon>
+  </button>
+</div>
+
+<h5>{{ trucks.length }} Camiones en cola</h5>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col"><small>Hora llegada</small></th>
+        <th scope="col">Vehículo</th>
+        <th scope="col">Descarga</th>
+        <th scope="col"><small>Inicio descarga</small></th>
+        <th scope="col">Carga</th>
+        <th scope="col"><small>Inicio carga</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of trucks; index as i">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ d.arrival | date : "HH:mm a" }}</td>
+        <td>
+          {{ d.truck.plaque }} <br />
+          {{ d.truck.type.name }}
+        </td>
+        <td>
+          <ng-container *ngIf="d.unloadBay">
+            <h6>{{ d.unloadBay.name }}</h6>
+            <small>{{ d.unloadLift.name }}</small>
+          </ng-container>
+          <ng-container
+            *ngIf="
+              !d.unloadBay && d.state !== 'CARGA' && d.state !== 'CARGANDO'
+            "
+          >
+            <button
+              class="btn btn-primary btn-sm"
+              (click)="setUnloadBay(assignUnloadTemplate, d)"
+            >
+              Asignar bahía
+            </button>
+          </ng-container>
+        </td>
+        <td>{{ d.unloadStartTime | date : "HH:mm a" }}</td>
+        <td>
+          <ng-container *ngIf="d.loadBay">
+            <h6>{{ d.loadBay.name }}</h6>
+            <small>{{ d.loadLift.name }}</small>
+          </ng-container>
+          <ng-container
+            *ngIf="
+              !d.loadBay && d.state !== 'DESCARGA' && d.state !== 'DESCARGANDO'
+            "
+          >
+            <button
+              class="btn btn-primary btn-sm"
+              (click)="setLoadBay(assignLoadTemplate, d)"
+            >
+              Asignar bahía
+            </button>
+          </ng-container>
+        </td>
+        <td>{{ d.loadStartTime | date : "HH:mm a" }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #assignUnloadTemplate>
+  <div class="modal-header">
+    <h5 class="modal-title">ASIGNAR BAHIA DE DESCARGA</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <form [formGroup]="unloadForm" (submit)="onSubmitUnload()">
+    <div class="modal-body">
+      <div class="row mb-4">
+        <div class="col">
+          <small>Camión</small>
+          <h5>{{ registry.truck.plaque }}</h5>
+        </div>
+        <div class="col">
+          <small>Tipo</small>
+          <h6 class="text-muted">{{ registry.truck.type }}</h6>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Seleccione Bahía</label>
+        <select class="form-select" formControlName="unloadBay">
+          <option value="">------------------</option>
+          <option value="{{ d._id }}" *ngFor="let d of formBays">
+            {{ d.name }}
+          </option>
+        </select>
+        <small class="form-text">Bahias disponibles</small>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Seleccione Montacarga</label>
+        <select class="form-select" formControlName="unloadLift">
+          <option value="">------------------</option>
+          <option value="{{ d._id }}" *ngFor="let d of lifts">
+            {{ d.name }}
+          </option>
+        </select>
+        <small class="form-text">Montacargas disponibles</small>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="submit"
+        [disabled]="!unloadForm.valid"
+        class="btn btn-primary btn-mob mb-2"
+        *ngIf="!sending"
+      >
+        <fa-icon [icon]="['fas', 'save']"></fa-icon> Asignar
+      </button>
+      <button class="btn btn-primary btn-mob mb-2" *ngIf="sending" disabled>
+        <fa-icon [icon]="['fas', 'spinner']"></fa-icon> Asignando...
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger btn-mob mb-2"
+        (click)="modalRef?.hide()"
+      >
+        <fa-icon [icon]="['fas', 'ban']"></fa-icon> Cancelar
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #assignLoadTemplate>
+  <div class="modal-header">
+    <h5 class="modal-title">ASIGNAR BAHIA DE CARGA</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <form [formGroup]="loadForm" (submit)="onSubmitLoad()">
+    <div class="modal-body">
+      <div class="row mb-4">
+        <div class="col">
+          <small>Camión</small>
+          <h5>{{ registry.truck.plaque }}</h5>
+        </div>
+        <div class="col">
+          <small>Tipo</small>
+          <h6 class="text-muted">{{ registry.truck.type }}</h6>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Seleccione Bahía</label>
+        <select class="form-select" formControlName="loadBay">
+          <option value="">------------------</option>
+          <option value="{{ d._id }}" *ngFor="let d of formBays">
+            {{ d.name }}
+          </option>
+        </select>
+        <small class="form-text">Bahias disponibles</small>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Seleccione Montacarga</label>
+        <select class="form-select" formControlName="loadLift">
+          <option value="">------------------</option>
+          <option value="{{ d._id }}" *ngFor="let d of lifts">
+            {{ d.name }}
+          </option>
+        </select>
+        <small class="form-text">Montacargas disponibles</small>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="submit"
+        [disabled]="!loadForm.valid"
+        class="btn btn-primary btn-mob mb-2"
+        *ngIf="!sending"
+      >
+        <fa-icon [icon]="['fas', 'save']"></fa-icon> Asignar
+      </button>
+      <button class="btn btn-primary btn-mob mb-2" *ngIf="sending" disabled>
+        <fa-icon [icon]="['fas', 'spinner']"></fa-icon> Asignando...
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger btn-mob mb-2"
+        (click)="modalRef?.hide()"
+      >
+        <fa-icon [icon]="['fas', 'ban']"></fa-icon> Cancelar
+      </button>
+    </div>
+  </form>
+</ng-template>

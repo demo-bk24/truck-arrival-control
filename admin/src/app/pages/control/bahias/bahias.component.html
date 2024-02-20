@@ -1,0 +1,83 @@
+<nb-card class="border-0 shadow-sm">
+  <nb-card-header>
+    <div class="row align-items-center g-0">
+      <div class="col-lg-3 align-self-center">
+        <app-header-info
+          title="BAHIAS"
+          description="Administrar bahias"
+          status="primary"
+          icon="clipboard-outline"
+        >
+        </app-header-info>
+      </div>
+      <div class="col-lg-9 text-end">
+        <div class="row justify-content-md-center float-end g-1">
+          <div class="col-auto">
+            <button
+              nbButton
+              fullWidth
+              shape="semi-round"
+              status="primary"
+              (click)="openModal()"
+            >
+              <nb-icon icon="plus-outline"></nb-icon>
+              Nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Activo</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of bays; let i = index">
+            <th>{{ i + 1 }}</th>
+            <td>{{ d.name }}</td>
+            <th>
+              <nb-checkbox
+                status="basic"
+                [(ngModel)]="d.isActive"
+                (ngModelChange)="update(d)"
+              ></nb-checkbox>
+            </th>
+            <td>
+              <button
+                (click)="openModal(d)"
+                nbTooltip="Editar"
+                nbTooltipStatus="primary"
+                nbButton
+                status="primary"
+                size="small"
+                outline
+              >
+                <nb-icon icon="edit-outline"></nb-icon>
+              </button>
+              <button
+                (click)="confirmDelete(d)"
+                class="ms-2"
+                nbTooltip="Eliminar"
+                nbTooltipStatus="danger"
+                nbButton
+                status="danger"
+                size="small"
+                outline
+              >
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

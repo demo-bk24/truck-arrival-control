@@ -1,0 +1,79 @@
+<div class="d-flex flex-row-reverse p-2">
+    <a href="javascript:;" fullscreen>
+        <fa-icon [icon]="['fas', 'expand']"></fa-icon>
+    </a>
+</div>
+
+<div class="container-fluid mt-5">
+    <div>
+        <h3 class="text-center font-weight-bold">
+            LLEGADA DE CAMIONES
+        </h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">PLACA</th>
+                    <th scope="col">CONDUCTOR</th>
+                    <th scope="col">HORA DE LLEGADA</th>
+                    <th scope="col">HORA DE ESPERA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-warning" *ngFor="let item of arrivalTrucks">
+                    <td>{{item.truck.plaque}}</td>
+                    <td>{{item.driver.firstName}} {{item.driver.lastName}}</td>
+                    <td>{{item.arrivalTime}}</td>
+                    <td>1 hora</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div>
+        <h3 class="text-center font-weight-bold">
+            CAMIONES EN DESCARGA
+        </h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">PLACA</th>
+                    <th scope="col">CONDUCTOR</th>
+                    <th scope="col">MONTACARGUISTA</th>
+                    <th scope="col">TIEMPO TRANSCURRIDO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-warning" *ngFor="let item of trucksUnload">
+                    <td>{{item.truck.plaque}}</td>
+                    <td>{{item.driver.firstName}} {{item.driver.lastName}}</td>
+                    <td>{{item.arrivalTime}}</td>
+                    <td>1 hora</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div>
+        <h3 class="text-center font-weight-bold">
+            CAMIONES EN CARGA
+        </h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">PLACA</th>
+                    <th scope="col">CONDUCTOR</th>
+                    <th scope="col">MONTACARGUISTA</th>
+                    <th scope="col">TIEMPO TRANSCURRIDO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-warning" *ngFor="let item of loadTrucks">
+                    <td>{{item.truck.plaque}}</td>
+                    <td>{{item.driver.firstName}} {{item.driver.lastName}}</td>
+                    <td>{{item.arrivalTime}}</td>
+                    <td>1 hora</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

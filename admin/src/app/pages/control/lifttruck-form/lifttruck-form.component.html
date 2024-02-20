@@ -1,0 +1,68 @@
+<nb-card appWindow widthSize="sm" class="scrollModal">
+  <nb-card-header>
+    <div class="d-flex align-items-center justify-content-between">
+      <app-header-info
+        [title]="title"
+        status="primary"
+        icon="clipboard-outline"
+      >
+      </app-header-info>
+      <button nbButton ghost status="basic" (click)="closeModal()">
+        <nb-icon icon="close-outline"></nb-icon>
+      </button>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form" class="row g-3">
+      <div class="col-md-12">
+        <label class="label">Nombre <small> *</small></label>
+        <input
+          formControlName="name"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese nombre"
+        />
+        <app-error-message controlName="name"></app-error-message>
+      </div>
+      <div class="col-md-12">
+        <label class="label">CD <small> *</small></label>
+        <nb-select
+          formControlName="campus"
+          placeholder="Seleccione sede"
+          shape="semi-round"
+          fullWidth
+        >
+          <nb-option [value]="item.code" *ngFor="let item of campus"
+            >{{ item.code }} - {{ item.name }} - {{ item.region }}
+          </nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-12">
+        <nb-checkbox formControlName="isFree">Libre</nb-checkbox>
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer class="text-end">
+    <button
+      nbButton
+      shape="semi-round"
+      status="primary"
+      (click)="submit()"
+      [disabled]="form.invalid"
+    >
+      <nb-icon icon="save-outline"></nb-icon>
+      Guardar
+    </button>
+    <button
+      nbButton
+      shape="semi-round"
+      status="danger"
+      class="ms-2"
+      (click)="closeModal()"
+    >
+      Cancelar
+    </button>
+  </nb-card-footer>
+</nb-card>

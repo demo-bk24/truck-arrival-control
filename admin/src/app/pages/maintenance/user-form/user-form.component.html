@@ -1,0 +1,153 @@
+<nb-card class="border-0 shadow-sm">
+  <nb-card-header>
+    <div class="row align-items-center g-0">
+      <div class="col-lg-3 align-self-center">
+        <app-header-info [title]="title" status="primary" icon="person-outline">
+        </app-header-info>
+      </div>
+      <div class="col-lg-9 text-end">
+        <button
+          nbButton
+          shape="semi-round"
+          ghost
+          routerLink="/pages/mantenimiento/usuarios"
+        >
+          <nb-icon icon="arrow-back-outline" status="primary"></nb-icon>
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form" class="row g-3">
+      <div class="col-md-6">
+        <label class="label">Cédula <small> *</small></label>
+        <input
+          type="text"
+          formControlName="document"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese cédula/DNI"
+        />
+        <app-error-message controlName="document"></app-error-message>
+      </div>
+      <div class="col-md-6">
+        <label class="label">CD <small> *</small></label>
+        <nb-select
+          formControlName="campus"
+          placeholder="Seleccione sede"
+          shape="semi-round"
+          fullWidth
+        >
+          <nb-option [value]="item.code" *ngFor="let item of campus"
+            >{{ item.code }} - {{ item.name }} - {{ item.region }}
+          </nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-6">
+        <label class="label">Nombres <small> *</small></label>
+        <input
+          formControlName="firstName"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese nombres"
+        />
+        <app-error-message controlName="firstName"></app-error-message>
+      </div>
+      <div class="col-md-6">
+        <label class="label">Apellidos <small> *</small></label>
+        <input
+          formControlName="lastName"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese apellidos"
+        />
+        <app-error-message controlName="lastName"></app-error-message>
+      </div>
+      <div class="row mt-4">
+        <div class="col">
+          <nb-checkbox formControlName="isDriver" status="basic"
+            >Es conductor</nb-checkbox
+          >
+        </div>
+        <div class="col">
+          <nb-checkbox formControlName="isControl" status="basic"
+            >Es control</nb-checkbox
+          >
+        </div>
+        <div class="col">
+          <nb-checkbox formControlName="isOperator" status="basic"
+            >Operador <small>(montacarga)</small>
+          </nb-checkbox>
+        </div>
+        <div class="col">
+          <nb-checkbox formControlName="isAssistant" status="basic"
+            >Asistente</nb-checkbox
+          >
+        </div>
+        <div class="col">
+          <nb-checkbox formControlName="isSorter" status="basic"
+            >Sorting</nb-checkbox
+          >
+        </div>
+        <div class="col">
+          <nb-checkbox formControlName="isPicking" status="basic"
+            >Picking</nb-checkbox
+          >
+        </div>
+        <div class="col">
+          <nb-checkbox formControlName="isAdmin" status="basic"
+            >Admin</nb-checkbox
+          >
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="label">Licencia <small>(Opcional)</small></label>
+        <input
+          formControlName="licence"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese número de licencia"
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="label">Categoría <small>(Opcional)</small></label>
+        <input
+          formControlName="category"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese categoría de licencia"
+        />
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer class="text-end">
+    <button
+      [disabled]="form.invalid"
+      nbButton
+      shape="semi-round"
+      status="primary"
+      (click)="submit()"
+    >
+      <nb-icon icon="save-outline"></nb-icon>
+      Guardar
+    </button>
+    <button
+      nbButton
+      shape="semi-round"
+      status="danger"
+      routerLink="/pages/mantenimiento/usuarios"
+      class="ms-2"
+    >
+      Cancelar
+    </button>
+  </nb-card-footer>
+</nb-card>

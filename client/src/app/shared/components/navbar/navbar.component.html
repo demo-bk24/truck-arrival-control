@@ -1,0 +1,83 @@
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand">
+      <img
+        src="../../../../assets/images/horizontal.png"
+        class="img-fluid"
+        width="150"
+      />
+    </a>
+    <p *ngIf="sede" class="me-auto text-white fs-4 fw-bold mt-3">
+      {{ sede?.code }} - {{ sede?.name }}
+    </p>
+    <div class="d-flex w-auto align-items-center">
+      <div class="me-2">
+        <!-- <span>{{ sede.value }}</span> -->
+        <!-- <select class="form-select form-select-sm" [formControl]="sede" (change)="changeCampus(sede)" > -->
+        <!-- <option *ngFor="let item of campus" [value]="item.code" >{{ item.code }} - {{ item.name }}</option> -->
+        <!-- </select> -->
+      </div>
+      <div class="dropdown" dropdown>
+        <span
+          style="cursor: pointer"
+          class="d-flex align-items-center hidden-arrow"
+          dropdownToggle
+        >
+          <span class="d-none d-md-block">{{ name }}</span>
+          <ngx-avatar
+            class="ms-2"
+            size="40"
+            initialsSize="2"
+            [name]="name"
+          ></ngx-avatar>
+        </span>
+        <ul
+          *dropdownMenu
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="navbarDropdownMenuAvatar"
+        >
+          <li>
+            <a class="dropdown-item">Mi perfil</a>
+          </li>
+          <li *ngIf="user.isAssistant">
+            <a
+              routerLink="/control/warehouse"
+              routerLinkActive="active"
+              class="dropdown-item"
+              >Almacen</a
+            >
+          </li>
+          <li *ngIf="user.isDriver">
+            <a
+              routerLink="/control/driver"
+              routerLinkActive="active"
+              class="dropdown-item"
+              >Conductor</a
+            >
+          </li>
+          <li *ngIf="user.isControl">
+            <a
+              routerLink="/control/control"
+              routerLinkActive="active"
+              class="dropdown-item"
+              >Control</a
+            >
+          </li>
+          <li *ngIf="user.isOperator">
+            <a
+              routerLink="/control/lift"
+              routerLinkActive="active"
+              class="dropdown-item"
+              >Operador</a
+            >
+          </li>
+          <li>
+            <a href="javascript:;" class="dropdown-item" (click)="logout()"
+              >Salir</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

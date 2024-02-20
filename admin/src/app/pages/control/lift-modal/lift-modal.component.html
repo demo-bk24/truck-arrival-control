@@ -1,0 +1,45 @@
+<nb-card appWindow widthSize="sm" class="scrollModal">
+  <nb-card-header>
+    <div class="d-flex align-items-center justify-content-between">
+      <app-header-info
+        [title]="lift.name"
+        description="Asignar operadores"
+        status="primary"
+        icon="car"
+      >
+      </app-header-info>
+      <button nbButton ghost status="basic" (click)="closeModal()">
+        <nb-icon icon="close-outline"></nb-icon>
+      </button>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <h6>Operadores asignados</h6>
+    <div *ngFor="let d of operators; let i = index">
+      <nb-checkbox
+        [disabled]="d.disable"
+        status="basic"
+        [(ngModel)]="d.isChecked"
+        (ngModelChange)="changeOperator(d)"
+      >
+        {{ d.firstName }} {{ d.lastName }}
+      </nb-checkbox>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="text-end">
+    <!-- <button nbButton shape="semi-round" status="danger" (click)="closeModal()">
+      <nb-icon icon="arrow-back-outline"></nb-icon>
+      Cancelar
+    </button> -->
+    <button
+      nbButton
+      shape="semi-round"
+      status="primary"
+      class="ms-2"
+      (click)="closeModal()"
+    >
+      <nb-icon icon="checkmark-outline"></nb-icon>
+      Hecho
+    </button>
+  </nb-card-footer>
+</nb-card>

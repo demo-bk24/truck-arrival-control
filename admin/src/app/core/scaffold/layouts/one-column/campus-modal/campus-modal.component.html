@@ -1,0 +1,19 @@
+<nb-card>
+  <nb-card-header>
+    <h4>Ud. no pertenece a ninguna CD.</h4>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-select
+      (selectedChange)="changeCampus($event)"
+      [formControl]="sede"
+      shape="semi-round"
+      status="primary"
+      placeholder="Seleccione una CD"
+      fullWidth
+    >
+      <nb-option [value]="item.code" *ngFor="let item of campus"
+        >{{ item.code }} - {{ item.name }}</nb-option
+      >
+    </nb-select>
+  </nb-card-body>
+</nb-card>

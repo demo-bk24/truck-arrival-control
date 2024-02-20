@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <h3 class="modal-title pull-left">No tiene configurado un Bahia.</h3>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div *ngIf="formBays.length > 0" class="col-md-12">
+      <label class="label">Seleccione Bahía</label>
+      <select
+        class="form-select"
+        [formControl]="loadBay"
+        (change)="setBahia(loadBay)"
+      >
+        <option value="{{ d._id }}" *ngFor="let d of formBays">
+          {{ d.name }}
+        </option>
+      </select>
+    </div>
+    <div *ngIf="formBays.length === 0" class="col-md-12">
+      No hay bahias disponibles en este momento.
+    </div>
+    <!-- <div class="col-md-12">
+      <label class="label">Seleccione Montacarga</label>
+      <select
+        class="form-select"
+        [formControl]="loadLift"
+        (change)="setLift(loadLift)"
+      >
+        <option value="{{ d._id }}" *ngFor="let d of lifts">
+          {{ d.name }}
+        </option>
+      </select>
+    </div> -->
+  </div>
+</div>

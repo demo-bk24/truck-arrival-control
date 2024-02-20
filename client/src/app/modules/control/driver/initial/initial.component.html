@@ -1,0 +1,54 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/control/driver">
+        <fa-icon [icon]="['fas', 'home']"></fa-icon>
+        Inicio
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Registrar llegada
+    </li>
+  </ol>
+</nav>
+<hr />
+<div class="d-flex justify-content-between">
+  <div class="">
+    <small>Vehículo</small>
+    <h4>
+      {{ truck.plaque }}
+      <a
+        class="btn btn-link"
+        [routerLink]="[
+          '/control/driver/register-form',
+          registry._id,
+          truck.plaque
+        ]"
+      >
+        <fa-icon [icon]="['fas', 'pencil-alt']"></fa-icon>
+      </a>
+    </h4>
+  </div>
+  <div class="mb-2 bd-highlight">{{ date | date : "dd/MM/YYYY" }}</div>
+</div>
+
+<div class="text-center pb-5" *ngIf="driver">
+  <small>Cédula</small>
+  <h1>
+    <strong>{{ driver.document }}</strong>
+  </h1>
+  <qrcode
+    [qrdata]="qr"
+    [allowEmptyString]="true"
+    [cssClass]="'center'"
+    [colorDark]="'#202'"
+    [colorLight]="'#fff'"
+    [elementType]="'canvas'"
+    [errorCorrectionLevel]="'M'"
+    [margin]="2"
+    [scale]="1"
+    [width]="300"
+  ></qrcode>
+  <small>Nombres y Apellidos</small>
+  <h5>{{ driver.firstName }} {{ driver.lastName }}</h5>
+</div>

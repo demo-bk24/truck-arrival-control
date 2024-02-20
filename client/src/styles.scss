@@ -1,0 +1,101 @@
+/* You can add global styles to this file, and also import other style files */
+
+$min-contrast-ratio: 3;
+$primary: #F9A61A;
+@import '~ngx-toastr/toastr';
+
+/* Importing Bootstrap SCSS file. */
+
+@import "~bootstrap/scss/bootstrap";
+
+/* Importing Datepicker SCSS file. */
+
+@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+.layout {
+    // background-color: #edf1f7;
+    background-color: white;
+    color: #222b45;
+    font-family: Open Sans, sans-serif;
+    font-size: .9375rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    min-height: 100vh;
+}
+
+.bg-green-2 {
+    background-color: rgb(24, 227, 47);
+    border-bottom: 3px solid rgb(14, 136, 14);
+    padding: 0.10em 0.45em !important;
+}
+
+// https://codepen.io/vram1980/pen/oNvWdO
+.bg-dark-2 {
+    background-color: rgb(29, 1, 5);
+    border-bottom: 3px solid rgb(0, 0, 0);
+    padding: 0.10em 0.45em !important;
+}
+
+.label {
+    color: #8f9bb3;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: $primary;
+}
+
+.dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+.card-bahia {
+    border: solid 1px;
+    padding: 15px;
+    height: 10rem;
+}
+
+.breadcrumb {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: #e9ecef;
+    border-radius: .25rem;
+}
+
+.breadcrumb-item a {
+    text-decoration: none;
+}
+
+.btn-rounded {
+    border-radius: 50px;
+}
+
+@media (max-width: 700px) {
+    legend {
+        font-size: calc(1.275rem + 0.3vw);
+    }
+    h1,
+    .h1 {
+        font-size: calc(1.375rem + 1.5vw);
+    }
+    h2,
+    .h2 {
+        font-size: calc(1.325rem + 0.9vw);
+    }
+    h3,
+    .h3 {
+        font-size: calc(1.3rem + 0.6vw);
+    }
+    h4,
+    .h4 {
+        font-size: calc(1.275rem + 0.3vw);
+    }
+    .btn-mob {
+        width: 100%;
+    }
+}

@@ -1,0 +1,90 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/control/driver">
+        <fa-icon [icon]="['fas', 'home']"></fa-icon>
+        Inicio
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Registrar vehículo
+    </li>
+  </ol>
+</nav>
+
+<hr />
+<h5>Datos de mi vehículo</h5>
+<form [formGroup]="form" (submit)="onSubmitTruck()" class="row g-3">
+  <div class="col-md-4">
+    <label class="form-label">Placa</label>
+    <input
+      formControlName="plaque"
+      type="text"
+      class="form-control"
+      placeholder="Ingrese placa"
+    />
+    <span class="form-text text-danger" *ngIf="invalidField('plaque')">
+      Placa es requerido
+    </span>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Tipo de vehículo</label>
+    <select
+      class="form-select"
+      formControlName="type"
+      #tt
+      (change)="typeSelected(tt.value)"
+    >
+      <option [value]="d._id" *ngFor="let d of truckTypes">{{ d.name }}</option>
+    </select>
+    <small class="form-text">{{ typeTruck?.description }}</small>
+    <span class="form-text text-danger" *ngIf="invalidField('type')">
+      Tipo es requerido
+    </span>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Procedencia</label>
+    <input
+      formControlName="origin"
+      type="text"
+      class="form-control"
+      placeholder="Ingrese lugar de procedencia"
+    />
+    <span class="form-text text-danger" *ngIf="invalidField('origin')">
+      Procendencia es requerido
+    </span>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">RUC</label>
+    <input
+      formControlName="ruc"
+      type="text"
+      class="form-control"
+      placeholder="Ingrese ruc de la empresa"
+    />
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Empresa</label>
+    <input
+      formControlName="company"
+      type="text"
+      class="form-control"
+      placeholder="Ingrese razon social"
+    />
+  </div>
+
+  <div class="my-5">
+    <button
+      class="btn btn-primary btn-mob"
+      type="submit"
+      [disabled]="form.invalid"
+      *ngIf="!loading"
+    >
+      <fa-icon [icon]="['fas', 'save']"></fa-icon> GUARDAR
+    </button>
+    <button class="btn btn-primary btn-mob" disabled *ngIf="loading">
+      <fa-icon [icon]="['fas', 'spinner']"></fa-icon>
+      Registrando...
+    </button>
+  </div>
+</form>

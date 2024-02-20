@@ -1,0 +1,11 @@
+<section>
+    <p class="mb-1">{{action}}</p>
+    <progressbar [max]="100" [value]="progress" [type]="typeProg" [striped]="true" [animate]="true">
+        <i>{{progress}}%</i>
+    </progressbar>
+    <div *ngIf="startTime" [ngClass]="{blink: !running}">
+        <div class="h3 fw-bold my-1">
+            <span>{{hours}}:</span><span>{{minutes}}:</span> <span>{{seconds}}</span>
+        </div>
+    </div>
+</section>

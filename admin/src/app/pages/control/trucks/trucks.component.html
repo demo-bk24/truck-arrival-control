@@ -1,0 +1,133 @@
+<nb-card class="border-0 shadow-sm">
+  <nb-card-header>
+    <div class="row align-items-center g-0">
+      <div class="col-lg-3 align-self-center">
+        <app-header-info
+          title="CAMIONES"
+          description="Administrar camiones"
+          status="primary"
+          icon="car-outline"
+        >
+        </app-header-info>
+      </div>
+      <div class="col-lg-9 text-end">
+        <div class="row justify-content-md-center float-end g-2">
+          <div class="col-auto">
+            <nb-select [formControl]="field" shape="semi-round">
+              <nb-option value="plaque">Placa</nb-option>
+            </nb-select>
+          </div>
+          <div class="col-auto">
+            <input
+              [formControl]="query"
+              type="search"
+              nbInput
+              shape="semi-round"
+              fullWidth
+              placeholder="Ingrese datos"
+            />
+          </div>
+          <div class="col-auto">
+            <button
+              nbButton
+              fullWidth
+              shape="semi-round"
+              status="info"
+              (click)="list(1)"
+            >
+              <nb-icon icon="eye-outline"></nb-icon>
+              VISUALIZAR
+            </button>
+          </div>
+          <div class="col-auto">
+            <button
+              nbButton
+              fullWidth
+              shape="semi-round"
+              status="primary"
+              routerLink="/pages/control/camion/create"
+            >
+              <nb-icon icon="plus"></nb-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Placa</th>
+            <th>Tipo</th>
+            <th>Procedencia</th>
+            <th>RUC</th>
+            <th>Empresa</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let d of trucks
+                | paginate
+                  : {
+                      id: 'trucks',
+                      itemsPerPage: perPage.value,
+                      currentPage: page,
+                      totalItems: total
+                    };
+              let i = index
+            "
+          >
+            <th>{{ (page - 1) * perPage.value + i + 1 }}</th>
+            <td>{{ d.plaque }}</td>
+            <td>
+              <small>{{ d.type }}</small>
+            </td>
+            <td>{{ d.origin }}</td>
+            <td>{{ d.ruc }}</td>
+            <td>{{ d.company }}</td>
+            <td>
+              <button
+                [routerLink]="['../camion', d._id]"
+                nbTooltip="Editar"
+                nbTooltipStatus="primary"
+                nbButton
+                status="primary"
+                size="small"
+                outline
+              >
+                <nb-icon icon="edit-outline"></nb-icon>
+              </button>
+              <button
+                class="ms-2"
+                (click)="confirmDelete(d)"
+                nbTooltip="Eliminar"
+                nbTooltipStatus="danger"
+                nbButton
+                status="danger"
+                size="small"
+                outline
+              >
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="text-center">
+    <pagination-controls
+      class="pagination"
+      [directionLinks]="true"
+      previousLabel=""
+      nextLabel=""
+      id="trucks"
+      (pageChange)="list($event)"
+    ></pagination-controls>
+  </nb-card-footer>
+</nb-card>

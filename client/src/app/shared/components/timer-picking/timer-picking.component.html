@@ -1,0 +1,7 @@
+<section>
+  <div *ngIf="startTime" [ngClass]="{ blink: !running }">
+    <div class="h5 fw-bold my-1">
+      <span>{{ hours }}:</span><span>{{ minutes }}:</span> <span>{{ seconds }}</span>
+    </div>
+  </div>
+</section>

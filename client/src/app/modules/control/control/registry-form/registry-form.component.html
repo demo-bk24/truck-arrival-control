@@ -1,0 +1,208 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/control/control">
+        <fa-icon [icon]="['fas', 'home']"></fa-icon>
+        Inicio
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Registrar llegada
+    </li>
+  </ol>
+</nav>
+<hr />
+
+<form [formGroup]="driverForm">
+  <fieldset class="row">
+    <legend class="mb-3">Ingrese datos del conductor</legend>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Cédula</label>
+      <input
+        type="text"
+        formControlName="document"
+        class="form-control"
+        placeholder="Ingrese cédula de identidad"
+        aria-describedby="helpDoc"
+      />
+      <small id="helpDoc" class="text-muted"
+        >Cédula o número de identidad DNI</small
+      >
+      <span class="form-text text-danger" *ngIf="invalidDriverField('document')"
+        >Dni es requerido</span
+      >
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Nombres</label>
+      <input
+        formControlName="firstName"
+        type="text"
+        class="form-control"
+        placeholder="Ingrese nombres"
+      />
+      <span
+        class="form-text text-danger"
+        *ngIf="invalidDriverField('firstName')"
+      >
+        Nombres es requerido
+      </span>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Apellidos</label>
+      <input
+        formControlName="lastName"
+        type="text"
+        class="form-control"
+        placeholder="Ingrese apellidos"
+      />
+      <span
+        class="form-text text-danger"
+        *ngIf="invalidDriverField('lastName')"
+      >
+        Apellidos es requerido
+      </span>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Licencia de conducir</label>
+      <input
+        formControlName="licence"
+        type="text"
+        class="form-control"
+        placeholder="Ingrese licencia de conducir"
+      />
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Categoria</label>
+      <input
+        formControlName="category"
+        formControlName="category"
+        type="text"
+        class="form-control"
+        placeholder="Categoria"
+      />
+    </div>
+  </fieldset>
+</form>
+<form [formGroup]="truckForm" (submit)="register()">
+  <fieldset class="row my-3">
+    <legend class="mb-3">Datos del camión</legend>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Placa</label>
+      <input
+        formControlName="plaque"
+        type="text"
+        class="form-control"
+        placeholder="Ingrese placa"
+      />
+      <span class="form-text text-danger" *ngIf="invalidTruckField('plaque')">
+        Placa es requerido
+      </span>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Tipo de vehículo</label>
+      <select
+        class="form-select"
+        formControlName="type"
+        #tt
+        (change)="typeSelected(tt.value)"
+      >
+        <option value="{{ d.name }}" *ngFor="let d of truckTypes">
+          {{ d.name }}
+        </option>
+      </select>
+      <small class="form-text">{{ typeTruck?.description }}</small>
+      <span class="form-text text-danger" *ngIf="invalidTruckField('type')"
+        >Tipo es requerido</span
+      >
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Procedencia</label>
+      <input
+        formControlName="origin"
+        type="text"
+        class="form-control"
+        placeholder="Ingrese lugar de procedencia"
+      />
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">RUC</label>
+      <input
+        formControlName="ruc"
+        type="text"
+        class="form-control"
+        placeholder="Ingrese ruc de la empresa"
+      />
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Empresa</label>
+      <input
+        formControlName="company"
+        type="text"
+        class="form-control"
+        placeholder="Ingrese razon social"
+      />
+    </div>
+  </fieldset>
+</form>
+<div class="text-end mb-5">
+  <button
+    (click)="register()"
+    class="btn btn-primary btn-mob"
+    [disabled]="driverForm.invalid || truckForm.invalid"
+    *ngIf="!loading"
+  >
+    <fa-icon [icon]="['fas', 'save']"></fa-icon>
+    Guardar y registrar llegada
+  </button>
+  <button *ngIf="loading" class="btn btn-primary btn-mob" disabled>
+    <fa-icon [icon]="['fas', 'spinner']"></fa-icon>
+    Registrando...
+  </button>
+</div>
+
+<div
+  bsModal
+  #template="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-child-name"
+>
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registro creado</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="template.hide()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <small>Conductor</small>
+          <h5>{{ message.firstName }} {{ message.lastName }}</h5>
+          <h6>DNI: {{ message.document }}</h6>
+
+          <small>Vehículo</small>
+          <h5>Placa: {{ message.plaque }}</h5>
+          <div class="text-success mb-3">
+            <fa-icon size="4x" [icon]="['fas', 'check']"></fa-icon>
+            <h4>Registrado</h4>
+            <h5>Vehículo en cola</h5>
+          </div>
+          <small>Hora llegada</small>
+          <h4>{{ message.arrival | date : "HH:mm a" }}</h4>
+          <h6>{{ message.arrival | date }}</h6>
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary" (click)="navigate()">
+            <fa-icon [icon]="['fas', 'check']"></fa-icon>
+            Ok
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

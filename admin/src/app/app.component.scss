@@ -1,0 +1,25 @@
+@import "../assets/themes.scss";
+
+@include nb-install-component() {
+  ::ng-deep pagination-template {
+    ::ng-deep ul .ng-star-inserted {
+      text-decoration: none;
+
+      &:hover {
+        background-color: var(--button-filled-primary-hover-background-color);
+        color: var(--button-filled-primary-text-color);
+      }
+    }
+
+    ::ng-deep .ngx-pagination a {
+      color: var(--text-basic-color);
+      padding: 10px 16px;
+    }
+
+    ::ng-deep .current {
+      background-color: var(--button-filled-primary-background-color);
+      color: var(--button-filled-primary-text-color);
+      padding: 10px 16px;
+    }
+  }
+}

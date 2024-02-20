@@ -1,0 +1,117 @@
+<nb-card class="border-0 shadow-sm">
+  <nb-card-header>
+    <div class="row align-items-center g-0">
+      <div class="col-lg-3 align-self-center">
+        <app-header-info [title]="title" status="primary" icon="car-outline">
+        </app-header-info>
+      </div>
+      <div class="col-lg-9 text-end">
+        <button
+          nbButton
+          shape="semi-round"
+          ghost
+          routerLink="/pages/control/camiones"
+        >
+          <nb-icon icon="arrow-back-outline" status="primary"></nb-icon>
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form" class="row g-3">
+      <div class="col-md-4">
+        <label class="label">Placa <small> *</small></label>
+        <input
+          formControlName="plaque"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese placa"
+        />
+        <app-error-message controlName="plaque"></app-error-message>
+      </div>
+      <div class="col-md-4">
+        <label class="label">CD <small> *</small></label>
+        <nb-select
+          formControlName="campus"
+          placeholder="Seleccione sede"
+          shape="semi-round"
+          fullWidth
+        >
+          <nb-option [value]="item.code" *ngFor="let item of campus"
+            >{{ item.code }} - {{ item.name }} - {{ item.region }}
+          </nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-4">
+        <label class="label">Tipo de camión <small> *</small></label>
+        <nb-select
+          formControlName="type"
+          placeholder="Seleccione sede"
+          shape="semi-round"
+          fullWidth
+        >
+          <nb-option [value]="d.name" *ngFor="let d of ttypes">{{
+            d.name
+          }}</nb-option>
+        </nb-select>
+        <app-error-message controlName="type"></app-error-message>
+      </div>
+      <div class="col-md-6">
+        <label class="label">Procediencia</label>
+        <input
+          formControlName="origin"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese procediencia"
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="label">RUC </label>
+        <input
+          formControlName="ruc"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese ruc"
+        />
+      </div>
+      <div class="col-md-12">
+        <label class="label">Empresa</label>
+        <input
+          formControlName="company"
+          type="text"
+          nbInput
+          shape="semi-round"
+          fullWidth
+          placeholder="Ingrese razón social"
+        />
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer class="text-end">
+    <button
+      (click)="submit()"
+      [disabled]="form.invalid"
+      nbButton
+      shape="semi-round"
+      status="primary"
+    >
+      <nb-icon icon="save-outline"></nb-icon>
+      Guardar
+    </button>
+    <button
+      class="ms-2"
+      nbButton
+      shape="semi-round"
+      status="danger"
+      routerLink="/pages/control/camiones"
+    >
+      Cancelar
+    </button>
+  </nb-card-footer>
+</nb-card>

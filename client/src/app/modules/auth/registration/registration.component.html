@@ -1,0 +1,135 @@
+<div class="row d-flex justify-content-center align-items-center h-100">
+  <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+    <div class="card shadow" style="border-radius: 1rem">
+      <div class="card-body p-md-5">
+        <div class="mb-md-5 mt-md-2 pb-2">
+          <div class="text-center">
+            <div class="mb-3">
+              <img
+                src="../../../../assets/images/logo.png"
+                class="img-fluid mb-2"
+                style="width: 85px"
+              />
+            </div>
+            <h4 class="fw-bold mb-3">Me registraré</h4>
+          </div>
+          <form [formGroup]="form" (submit)="register()">
+            <div class="mb-3">
+              <select
+                class="form-select"
+                formControlName="campus"
+                aria-label="Default select example"
+              >
+                <option value="">Seleccionar CD</option>
+                <option *ngFor="let item of campus" [value]="item.code">
+                  {{ item.code }} - {{ item.name }}
+                </option>
+              </select>
+              <span
+                class="form-text text-danger"
+                *ngIf="invalidField('campus')"
+              >
+                Campus es requerido
+              </span>
+            </div>
+            <div class="mb-3">
+              <input
+                formControlName="document"
+                type="text"
+                class="form-control"
+                placeholder="Cedúla/DNI"
+              />
+              <span
+                class="form-text text-danger"
+                *ngIf="invalidField('document')"
+              >
+                {{ documentErrorMsg }}
+              </span>
+            </div>
+            <div class="mb-3">
+              <input
+                formControlName="firstName"
+                type="text"
+                class="form-control"
+                placeholder="Nombres"
+              />
+              <span
+                class="form-text text-danger"
+                *ngIf="invalidField('firstName')"
+              >
+                Nombres es requerido
+              </span>
+            </div>
+            <div class="mb-3">
+              <input
+                formControlName="lastName"
+                type="text"
+                class="form-control"
+                placeholder="Apellidos"
+              />
+              <span
+                class="form-text text-danger"
+                *ngIf="invalidField('lastName')"
+              >
+                Apellidos es requerido
+              </span>
+            </div>
+            <div class="mb-3">
+              <input
+                formControlName="licence"
+                type="text"
+                class="form-control"
+                placeholder="Licencia de conducir"
+              />
+              <span
+                class="form-text text-danger"
+                *ngIf="invalidField('licence')"
+              >
+                Licencia es requerido
+              </span>
+            </div>
+            <div class="mb-3">
+              <input
+                formControlName="category"
+                type="text"
+                class="form-control"
+                placeholder="Categoria"
+              />
+              <span
+                class="form-text text-danger"
+                *ngIf="invalidField('category')"
+              >
+                Categoría es requerido
+              </span>
+            </div>
+            <div class="d-grid gap-2">
+              <button
+                *ngIf="!loading"
+                class="btn btn-primary px-5"
+                type="submit"
+                [disabled]="form.invalid"
+              >
+                <fa-icon [icon]="['fas', 'book']"></fa-icon>
+                Registrame
+              </button>
+              <button
+                class="btn btn-outline-primary px-5"
+                *ngIf="loading"
+                disabled
+              >
+                <fa-icon [icon]="['fas', 'spinner']"></fa-icon>
+                Espere...
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="text-center">
+          <p class="mb-0">
+            ¿Ya tienes cuenta?
+            <a routerLink="/auth/login" class="fw-bold"> Ingresar </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

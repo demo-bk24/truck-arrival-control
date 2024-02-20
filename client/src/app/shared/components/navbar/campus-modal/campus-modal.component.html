@@ -1,0 +1,9 @@
+<div class="modal-header">
+  <h3 class="modal-title pull-left">Ud. no pertenece a ninguna CD.</h3>
+</div>
+<div class="modal-body">
+  <h5>Seleccione su CD: </h5>
+  <select class="form-select form-select-lg" [formControl]="sede" (change)="changeCampus(sede)">
+    <option *ngFor="let item of campus" [value]="item.code">{{ item.code }} - {{ item.name }}</option>
+  </select>
+</div>

@@ -1,0 +1,320 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/control/control">
+        <fa-icon [icon]="['fas', 'home']"></fa-icon>
+        Inicio
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Control de llegadas y salidas
+    </li>
+  </ol>
+</nav>
+<h3>
+  Control |
+  <small class="text-muted"
+    >Registre llegadas, autorice ingresos y registre salidas</small
+  >
+</h3>
+<hr />
+<div class="text-end">
+  <button class="btn btn-primary btn-lg btn-mob" (click)="openModal(template)">
+    <fa-icon [icon]="['fas', 'edit']"></fa-icon>
+    Registrar llegada
+  </button>
+</div>
+<div class="row mt-2">
+  <div class="col-md-4">
+    <p class="mb-1">
+      <span class="text-danger">{{ arrivals.length }}</span> Vehículos en cola
+      <button class="btn btn-link" (click)="getArrivals()">
+        <fa-icon [icon]="['fas', 'sync-alt']"></fa-icon>
+      </button>
+    </p>
+  </div>
+  <div class="col-md-2 offset-md-6">
+    <input
+      type="search"
+      name="celula"
+      id="celula"
+      [(ngModel)]="byCedule"
+      class="form-control form-control-sm"
+      placeholder="Filtrar por cédula"
+    />
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col" style="min-width: 8em">Vehículo</th>
+        <th scope="col" style="min-width: 8em">Conductor</th>
+        <th scope="col"><small>Hora llegada</small></th>
+        <th scope="col" style="min-width: 8em">
+          <small>Bahia Descarga</small>
+        </th>
+        <th scope="col"><small>Hora Ingreso</small></th>
+        <th scope="col" style="min-width: 8em">
+          <small>Bahia de Carga</small>
+        </th>
+        <th scope="col"><small>Hora salida</small></th>
+        <th scope="col"><small>Obs.</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let d of filtered(); index as i"
+        class="{{ d.alert ? 'flicker' : '' }}"
+      >
+        <td scope="row">
+          <strong>{{ i + 1 }}</strong>
+        </td>
+        <td>
+          <span
+            class="badge rounded-pill {{ d.exit ? 'bg-dark-2' : 'bg-green-2' }}"
+            >*</span
+          >
+          &nbsp;
+          <span>
+            <strong>{{ d.truck.plaque }}</strong>
+            <br />
+            <small
+              >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {{ d.truck.type }}</small
+            >
+          </span>
+        </td>
+        <td>
+          {{ d.driver.document }}<br />
+          <small>{{ d.driver.firstName }} {{ d.driver.lastName }}</small>
+        </td>
+        <td>{{ d.arrival | date : "HH:mm a" }}</td>
+        <td>
+          <ng-container *ngIf="d.unloadBay">
+            <p class="m-0">{{ d.unloadBay.name }}</p>
+            <small
+              class="{{ d.state === 'DESCARGANDO...' ? 'text-danger' : '' }}"
+              >{{ d.state }}</small
+            >
+          </ng-container>
+        </td>
+        <td>
+          <ng-container *ngIf="!d.checkInTime && (d.unloadBay || d.loadBay)">
+            <button
+              class="btn btn-warning btn-sm"
+              (click)="confirmModal(dialog, d)"
+            >
+              <fa-icon [icon]="['fas', 'check']"></fa-icon>
+              Autorizar
+            </button>
+          </ng-container>
+          <ng-container *ngIf="d.checkInTime && (d.unloadBay || d.loadBay)">
+            {{ d.checkInTime | date : "HH:mm a" }}
+          </ng-container>
+        </td>
+        <td>
+          <ng-container *ngIf="d.loadBay">
+            <p class="m-0">{{ d.loadBay.name }}</p>
+            <small
+              class="{{ d.state === 'CARGANDO...' ? 'text-danger' : '' }}"
+              >{{ d.state }}</small
+            >
+          </ng-container>
+        </td>
+        <td>
+          <ng-container *ngIf="d.exit">
+            {{ d.exit | date : "HH:mm a" }}
+          </ng-container>
+          <ng-container
+            *ngIf="d.state === 'CARGADO' || d.state === 'DESCARGADO'"
+          >
+            <button
+              class="btn btn-primary btn-sm"
+              (click)="openConfirmModal(confirm, d)"
+            >
+              Salida
+            </button>
+          </ng-container>
+        </td>
+        <td>
+          <button
+            class="btn btn-link"
+            (click)="openObsFormModal(obsTemplate, d)"
+          >
+            <fa-icon
+              [icon]="['far', 'comment']"
+              size="lg"
+              *ngIf="!d.observation"
+            ></fa-icon>
+            <fa-icon
+              [icon]="['fas', 'comment']"
+              size="lg"
+              *ngIf="d.observation"
+            ></fa-icon>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h5 class="modal-title">Ingrese número de identidad</h5>
+    <button type="button" class="btn-close" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="document">Número de identidad</label>
+      <input
+        type="search"
+        name="document"
+        id="document"
+        [formControl]="document"
+        class="form-control"
+        placeholder="Ingrese número de identidad"
+      />
+      <span class="form-text">Cédula / DNI</span>
+    </div>
+
+    <div *ngIf="found">
+      <div class="text-center text-warning">
+        <fa-icon [icon]="['fas', 'exclamation-triangle']" size="3x"></fa-icon>
+      </div>
+      <p>Su llegada ya fue registrado, se encuentra en la cola de espera</p>
+    </div>
+    <div *ngIf="!found">
+      <button
+        class="btn btn-primary w-100 mt-4"
+        [disabled]="document.invalid"
+        (click)="navigate()"
+      >
+        <fa-icon [icon]="['fas', 'search']"></fa-icon>
+        Buscar
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #dialog>
+  <div class="modal-header">
+    <h5 class="modal-title">Autorizar ingreso</h5>
+    <button type="button" class="btn-close" (click)="modalRef.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>Confirme el ingreso del vehículo al almacén</p>
+    <button
+      type="button"
+      class="btn btn-primary w-100 mb-2"
+      (click)="saveCheckIn()"
+    >
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #confirm>
+  <div class="modal-header">
+    <h5 class="modal-title">Confirmar salida</h5>
+    <button type="button" class="btn-close" (click)="modalRef.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>
+      ¿Confirma la salida del vehículo
+      <strong>{{ registry.truck.plaque }}</strong
+      >?
+    </p>
+    <button
+      type="button"
+      class="btn btn-primary w-100 mb-2"
+      (click)="saveExit()"
+    >
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #obsTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title">Observaciónes del registro</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modalRef.hide()"
+    ></button>
+  </div>
+  <form [formGroup]="obsForm" (submit)="saveObs()">
+    <div class="modal-body">
+      <h5>Vehículo: {{ registry.truck.plaque }}</h5>
+      <p class="text-end">
+        Conductor: {{ registry.driver.firstName }}
+        {{ registry.driver.lastName }}
+      </p>
+      <div class="form-group">
+        <label for="observation">Observación</label>
+        <textarea
+          formControlName="observation"
+          class="form-control"
+          id="observation"
+          rows="6"
+          [ngClass]="validClass('observation')"
+          placeholder="Ingrese observación o nota"
+        ></textarea>
+        <div
+          class="invalid-feedback"
+          *ngIf="f['observation'].errors?.['maxlength']"
+        >
+          Este campo no puede exceder 300 caracteres
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="submit"
+        class="btn btn-primary btn-mobile"
+        [disabled]="!obsForm.valid"
+        *ngIf="!sending"
+      >
+        <fa-icon [icon]="['fas', 'save']"></fa-icon> Guardar
+      </button>
+      <button
+        class="btn btn-primary btn-mobile"
+        type="button"
+        disabled
+        *ngIf="sending"
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        Guardando...
+      </button>
+      <button
+        type="button"
+        class="btn btn-secondary btn-mobile"
+        (click)="modalRef.hide()"
+      >
+        Cancelar
+      </button>
+    </div>
+  </form>
+</ng-template>

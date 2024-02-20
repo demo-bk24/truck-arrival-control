@@ -1,0 +1,94 @@
+<nb-card class="border-0 shadow-sm">
+  <nb-card-header>
+    <div class="row align-items-center g-0">
+      <div class="col-lg-3 align-self-center">
+        <app-header-info
+          title="SEDES"
+          description="Administrar sedes"
+          status="primary"
+          icon="people-outline"
+        >
+        </app-header-info>
+      </div>
+      <div class="col-lg-9 text-end">
+        <div class="row justify-content-md-center float-end g-2">
+          <div class="col-auto">
+            <input
+              type="search"
+              nbInput
+              shape="semi-round"
+              fullWidth
+              placeholder="Buscar sede"
+            />
+          </div>
+          <div class="col-auto">
+            <button
+              nbButton
+              fullWidth
+              shape="semi-round"
+              status="primary"
+              (click)="openModal()"
+            >
+              <nb-icon icon="plus-outline"></nb-icon>
+              Nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>CD</th>
+            <th>BK</th>
+            <th>Meta sorting</th>
+            <th>Meta picking</th>
+            <th>Meta control</th>
+            <th>Región</th>
+            <th>Opción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of campus; index as i">
+            <td>{{ i + 1 }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.code }}</td>
+            <td>{{ item.goalSorting }} cjs/hora</td>
+            <td>{{ item.goalPicking }} cjs/hora</td>
+            <td>{{ item.goalControl }} minutos</td>
+            <td>{{ item.region }}</td>
+            <td>
+              <button
+                nbTooltip="Editar"
+                nbTooltipStatus="primary"
+                (click)="openModal(item)"
+                nbButton
+                status="primary"
+                size="small"
+                outline
+              >
+                <nb-icon icon="edit-outline"></nb-icon>
+              </button>
+              <button
+                class="ms-2"
+                nbTooltip="Eliminar"
+                nbTooltipStatus="danger"
+                (click)="confirmDelete(item)"
+                nbButton
+                status="danger"
+                size="small"
+                outline
+              >
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,375 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <fa-icon [icon]="['fas', 'home']"></fa-icon>
+      Inicio
+    </li>
+  </ol>
+</nav>
+<div *ngIf="myLift">
+  <h3 *ngIf="!myLift.isFree">
+    {{ title }}|
+    <small class="text-muted" *ngIf="!registry?.checkInTime"
+      >El camión no ha ingresado aún</small
+    >
+    <small class="text-muted" *ngIf="registry?.checkInTime"
+      >{{
+        registry.state === "DESCARGA" ? "Descargar" : "Cargar"
+      }}
+      camión</small
+    >
+  </h3>
+  <hr />
+  <div class="row mb-5" [formGroup]="loadForm">
+    <div class="col-md">
+      <button
+        (click)="loadMyLift()"
+        class="btn btn-sm btn-outline-dark btn-rounded"
+      >
+        <fa-icon [icon]="['fas', 'sync-alt']"></fa-icon>
+      </button>
+    </div>
+    <div class="col-md">
+      <h4 class="fw-bold">{{ myLift?.name }}</h4>
+    </div>
+    <div class="col-md-2" *ngIf="myLift.isFree">
+      <ng-container *ngIf="formBays.length > 0">
+        <label class="label">Cambiar Bahía</label>
+        <select
+          class="form-select"
+          formControlName="loadBay"
+          (change)="setBahia(loadForm.get('loadBay'))"
+        >
+          <option value="{{ d._id }}" *ngFor="let d of formBays">
+            {{ d.name }}
+          </option>
+        </select>
+      </ng-container>
+      <h5 *ngIf="formBays.length === 0">No hay bahias disponibles</h5>
+    </div>
+    <!-- <div class="col-md-2" *ngIf="myLift.isFree">
+            <label class="label">Cambiar Montacarga</label>
+            <select class="form-select" formControlName="loadLift" (change)="setLift(loadForm.get('loadLift'))">
+                <option value="{{d._id}}" *ngFor="let d of lifts">{{d.name}}</option>
+            </select>
+        </div> -->
+    <div class="col-md-1">
+      <p class="text-end">{{ date | date : "dd/MM/YY" }}</p>
+    </div>
+  </div>
+
+  <div class="pb-5" *ngIf="!myLift.isFree">
+    <!-- Verificar si el camión ha ingresado a bahia -->
+    <div class="row" *ngIf="registry?.checkInTime">
+      <div class="col-md-4 offset-md-4 text-center">
+        <fa-icon
+          [icon]="['fas', 'truck']"
+          size="4x"
+          class="text-primary"
+        ></fa-icon>
+        <p class="mt-3"><small>Camión</small></p>
+        <h4>
+          {{ registry?.truck?.type }} - {{ registry?.truck?.plaque }}
+          <small class="text-muted">{{ registry?.truck?.type?.name }}</small>
+        </h4>
+        <h5>{{ registry?.bay?.name }}</h5>
+
+        <div *ngIf="registry.state === 'DESCARGA'" class="mt-4">
+          <button class="btn btn-primary btn-lg w-100" (click)="unloadTruck()">
+            <!-- (click)="confirmModal(unloadConfirm)" -->
+            <fa-icon [icon]="['fas', 'check']"></fa-icon> INICIAR DESCARGA
+          </button>
+        </div>
+        <div
+          [ngStyle]="styleUnloadTruck()"
+          *ngIf="registry.state === 'DESCARGANDO' && registry.unloadUser"
+        >
+          <small>Hora inicio</small>
+          <h4 class="text-danger">
+            {{ registry.unloadStartTime | date : "HH:mm a" }}
+          </h4>
+          <h5 *ngIf="registry.unloadUser !== userId">
+            El usuario:
+            <span class="fw-bold"
+              >{{ unloadUserInfo?.name }} {{ unloadUserInfo?.lastName }}</span
+            >
+            ya se encuentra descargando.
+          </h5>
+          <h3 *ngIf="registry.unloadUser === userId" class="text-success">
+            DESCARGANDO...
+          </h3>
+          <app-timer
+            *ngIf="maxTimeUnload"
+            [start]="_start"
+            [startTime]="registry.unloadStartTime"
+            [maxMin]="maxTimeUnload"
+          ></app-timer>
+          <button
+            *ngIf="registry.unloadUser === userId"
+            class="btn btn-primary btn-lg w-100 mt-3"
+            (click)="unloadEndTruck()"
+          >
+            <fa-icon [icon]="['fas', 'check']"></fa-icon> FINALIZAR DESCARGA
+          </button>
+        </div>
+
+        <div *ngIf="registry.state === 'CARGA'" class="mt-4">
+          <button class="btn btn-primary btn-lg w-100" (click)="loadTruck()">
+            <fa-icon [icon]="['fas', 'check']"></fa-icon> INICIAR CARGA
+          </button>
+        </div>
+        <div
+          [ngStyle]="styleLoadTruck()"
+          *ngIf="registry.state === 'CARGANDO' && registry.loadUser"
+        >
+          <small>Hora inicio</small>
+          <h4 class="text-danger">
+            {{ registry.loadStartTime | date : "HH:mm a" }}
+          </h4>
+          <h5 *ngIf="registry.loadUser !== userId">
+            El usuario:
+            <span class="fw-bold"
+              >{{ loadUserInfo?.name }} {{ loadUserInfo?.lastName }}</span
+            >
+            ya se encuentra cargando.
+          </h5>
+          <h3 *ngIf="registry.loadUser === userId" class="text-success">
+            CARGANDO...
+          </h3>
+          <app-timer
+            *ngIf="maxTimeLoad"
+            [start]="_start"
+            [startTime]="registry.loadStartTime"
+            [maxMin]="maxTimeLoad"
+          ></app-timer>
+          <!-- <small>Tiempo transcurrido</small>
+                <h3 class="text-danger">05:12:23</h3> -->
+          <button
+            *ngIf="registry.loadUser === userId"
+            class="btn btn-primary btn-lg w-100 mt-3"
+            (click)="loadEndTruck()"
+          >
+            <fa-icon [icon]="['fas', 'check']"></fa-icon> FINALIZAR CARGA
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #unloadConfirm>
+  <div class="modal-header">
+    <h5 class="modal-title">Iniciar descarga</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>Confirme el inicio de descarga del vehículo</p>
+    <button type="button" class="btn btn-primary w-100 mb-2">
+      <!-- (click)="unloadTruck()" -->
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef?.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #unloadEndConfirm>
+  <div class="modal-header">
+    <h5 class="modal-title">Finalizar descarga</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>Confirme que se ha finalizado la descarga del vehículo</p>
+    <button
+      type="button"
+      class="btn btn-primary w-100 mb-2"
+      (click)="unloadEndTruck()"
+    >
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef?.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #loadConfirm>
+  <div class="modal-header">
+    <h5 class="modal-title">Iniciar carga</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>Confirme el inicio de carga del vehículo</p>
+    <button type="button" class="btn btn-primary w-100 mb-2">
+      <!-- (click)="loadTruck()" -->
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef?.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #loadEndConfirm>
+  <div class="modal-header">
+    <h5 class="modal-title">Finalizar carga</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>Confirme que se ha finalizado la carga del vehículo</p>
+    <button
+      type="button"
+      class="btn btn-primary w-100 mb-2"
+      (click)="loadEndTruck()"
+    >
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef?.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<div class="row" *ngIf="myLift?.isFree && arrivals.length > 0">
+  <!-- <div class="col-md-4 text-center">
+        <fa-icon class="text-primary" [icon]="['fas', 'hand-peace']" size="4x"></fa-icon>
+        <h3 class="mt-3">{{myLift?.name}} libre</h3>
+        <p class="text-muted">Esperando ser asignado</p>
+    </div> -->
+  <!-- <div class="col-md-8">
+        <div class="row"> -->
+  <div *ngFor="let type of typesOfArrivals" class="col-md-4">
+    <table class="table">
+      <thead>
+        <tr class="text-center align-middle">
+          <th style="font-size: 20px">{{ type }}</th>
+          <th>Acción</th>
+          <th>Estado</th>
+          <th>Tiempo Descarga</th>
+          <th>Tiempo Carga</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let item of arrivalsByType(type)"
+          class="align-middle text-center"
+        >
+          <td>
+            <span class="fw-bold">{{ item.truck.plaque }}</span>
+            <!-- <br /> -->
+            <!-- Ing:{{ item.arrival | date: "HH:mm" }} -->
+          </td>
+          <td>
+            <div *ngIf="item.state !== 'SALIDA'" class="text-center">
+              <button
+                *ngIf="
+                  !item.unloadBay &&
+                  item.state !== 'CARGA' &&
+                  item.state !== 'CARGANDO' &&
+                  item.state !== 'CARGANDO...'
+                "
+                class="btn btn-primary btn-sm mb-1"
+                (click)="setUnloadBay(item)"
+              >
+                <!-- (click)="confirmBay(unloadStartConfirm, item)" -->
+                Descargar
+              </button>
+              <button
+                *ngIf="
+                  !item.loadBay &&
+                  item.state !== 'DESCARGA' &&
+                  item.state !== 'DESCARGANDO' &&
+                  item.state !== 'DESCARGANDO...'
+                "
+                class="btn btn-primary btn-sm"
+                (click)="setLoadBay(item)"
+              >
+                <!-- (click)="confirmBay(loadStartConfirm, item)" -->
+                Cargar
+              </button>
+            </div>
+          </td>
+          <td>
+            <span
+              class="fw-bold {{
+                item.state === 'DESCARGADO' || item.stete === 'CARGADO'
+                  ? ''
+                  : 'text-secondary'
+              }}"
+              style="font-size: 12px"
+            >
+              {{ item.state }}
+            </span>
+          </td>
+          <td [ngStyle]="colorizeUnload(item)" class="fw-bold">
+            {{ item.currentUnloadTime }}
+          </td>
+          <td [ngStyle]="colorizeLoad(item)" class="fw-bold">
+            {{ item.currentLoadTime }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- </div> -->
+  <!-- </div> -->
+</div>
+
+<ng-template #unloadStartConfirm>
+  <div class="modal-header">
+    <h5 class="modal-title">Descargar</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>¿Esta seguro(a) de descargar?</p>
+    <button type="button" class="btn btn-primary w-100 mb-2">
+      <!-- (click)="setUnloadBay()" -->
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef?.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #loadStartConfirm>
+  <div class="modal-header">
+    <h5 class="modal-title">Cargar</h5>
+    <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <p>¿Esta seguro(a) de cargar?</p>
+    <button type="button" class="btn btn-primary w-100 mb-2">
+      <!-- (click)="setLoadBay()" -->
+      <fa-icon [icon]="['fas', 'check']"></fa-icon> Confirmar
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-danger w-100 mb-2"
+      (click)="modalRef?.hide()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>

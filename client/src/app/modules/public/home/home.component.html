@@ -1,0 +1,125 @@
+<div class="container-fluid mt-3">
+    <div class="row mb-3">
+        <div class="col">
+            <h4>{{today|date:'dd/MM/yyyy'}}</h4>
+        </div>
+        <div class="col">
+            <div *ngIf="sede" class="d-flex align-items-center justify-content-center gap-2">
+                <h5 class="mb-0">{{ sede?.code }} - {{ sede?.name }}</h5>
+                <button class="btn btn-sm btn-info" (click)="openModalWithComponent()">Cambiar</button>
+            </div>
+        </div>
+        <div class="col text-end">
+            <a href="javascript:;" class="btn btn-outline-warning" fullscreen>
+                <fa-icon [icon]="['fas', 'expand']"></fa-icon>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3" *ngFor="let d of bays">
+            <div class="card mb-3" [ngStyle]="d.isFree ? { 'background-color': 'rgb(95, 255, 95)' } : colorizeForBay(d)">
+                <div class="card-body">
+                    <h5 class="card-title">{{d.name}}</h5>
+                    <hr class="m-0">
+                    <div *ngIf="!d.isFree">
+                        <div class="row">
+                            <div class="col">
+                                <small>Vehículo</small>
+                                <h4>{{d.registry.truck.plaque}}</h4>
+                            </div>
+                            <div class="col">
+                                <small>Montacarga</small>
+                                <h5>{{d.registry.lift.name}}</h5>
+                            </div>
+                        </div>
+                        <div class="text-center" *ngIf="d.registry.state==='DESCARGANDO'">
+                            <app-timer *ngIf="d.registry.timeUnload" [start]="true" [action]="'DESCARGANDO...'" [startTime]="d.registry.unloadStartTime" [maxMin]="d.registry.timeUnload"></app-timer>
+                            <!-- <h4 class="fw-bold">{{ d.registry.currentUnloadTime }}</h4> -->
+                        </div>
+                        <div class="text-center" *ngIf="d.registry.state==='CARGANDO'">
+                            <app-timer *ngIf="d.registry.timeLoad" [start]="true" [action]="'CARGANDO...'" [startTime]="d.registry.loadStartTime" [maxMin]="d.registry.timeLoad"></app-timer>
+                        </div>
+                        <div class="text-center" *ngIf="d.registry.state==='DESCARGA' || d.registry.state==='CARGA'">
+                            <p class="text-danger mb-1">ESPERANDO VEHICULO</p>
+                            <app-timer></app-timer>
+                            <h4 class="text-danger fw-bold">00:00:00</h4>
+                        </div>
+                    </div>
+                    <div class="text-center text-success" *ngIf="d.isFree">
+                        <small>Vehículo</small>
+                        <h4>-------</h4>
+                        <small>Estado</small>
+                        <h2 class="text-muted"><small>LIBRE</small></h2>
+                        <app-timer></app-timer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button (click)="loadBays()" class="btn btn-sm btn-outline-dark float-end btn-rounded me-2">
+        <fa-icon [icon]="['fas', 'sync-alt' ]"></fa-icon>
+    </button>
+    <h5>{{trucks.length}} Camiones en cola</h5>
+    <div class="table-responsive mt-4">
+        <table class="table">
+            <thead>
+                <tr class="text-center">
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th colspan="3" style="background-color: #deefff">Llegada / Ingreso</th>
+                    <th colspan="3" style="background-color: #eddfec">Descarga</th>
+                    <th colspan="3" style="background-color: #e0f8f8">Carga</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>#</th>
+                    <th style="width: 50px">Tipo</th>
+                    <th style="min-width: 8em;">Vehículo</th>
+                    <th style="min-width: 8em;">Conductor</th>
+                    <th class="text-center" style="background-color: #deefff"><small>Hora llegada</small></th>
+                    <th class="text-center" style="background-color: #deefff"><small>Hora Ingreso</small></th>
+                    <th class="text-center" style="background-color: #deefff"><small>Tiempo</small></th>
+                    <th class="text-center" style="background-color: #eddfec"><small>Inicio</small></th>
+                    <th class="text-center" style="background-color: #eddfec"><small>Fin</small></th>
+                    <th class="text-center" style="background-color: #eddfec"><small>Tiempo</small></th>
+                    <th class="text-center" style="background-color: #e0f8f8"><small>Inicio</small></th>
+                    <th class="text-center" style="background-color: #e0f8f8"><small>Fin</small></th>
+                    <th class="text-center" style="background-color: #e0f8f8"><small>Tiempo</small></th>
+                    <th class="text-center">Tiempo total</th>
+                    <!-- <th scope="col" class="text-center"><small>Tiempo descarga</small></th> -->
+                    <!-- <th scope="col" class="text-center"><small>Tiempo carga</small></th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr [ngStyle]="colorize(d)" *ngFor="let d of trucks; index as i" class="align-middle">
+                    <th>{{ i + 1 }}</th>
+                    <td class="text-center fw-bold">{{ d.truck.type }}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="badge rounded-pill {{d.exit?'bg-dark-2':'bg-green-2'}}">*</span> &nbsp;
+                            <span class="fw-bold">
+                                {{d.truck.plaque}}
+                                <!-- <small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ d.truck.type }}</small> -->
+                            </span>
+                        </div>
+                    </td>
+                    <td>{{d.driver.firstName | titlecase }} {{d.driver.lastName | titlecase }}</td>
+                    <td class="text-center">{{d.arrival | date:'HH:mm'}}</td>
+                    <td class="text-center">{{d.checkInTime | date:'HH:mm'}}</td>
+                    <td class="bg-secondary text-white text-center fw-bold">{{ d?.arrivalTime }}</td>
+                    <td class="text-center">{{d.unloadStartTime | date:'HH:mm'}}</td>
+                    <td class="text-center">{{d.unloadEndTime | date:'HH:mm'}}</td>
+                    <td class="bg-secondary text-white text-center fw-bold">{{ d?.unloadTime }}</td>
+                    <td class="text-center">{{d.loadStartTime | date:'HH:mm'}}</td>
+                    <td class="text-center">{{d.loadEndTime | date:'HH:mm'}}</td>
+                    <td class="bg-secondary text-white text-center fw-bold">{{ d?.loadTime }}</td>
+                    <td class="text-center fw-bold">{{ getTotalTime(d) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
